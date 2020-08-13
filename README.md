@@ -1,0 +1,3 @@
+# wpromote
+# pokemonTeams
+# pokemonTeams
