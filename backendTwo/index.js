@@ -1,8 +1,15 @@
 const express = require('express')
 const morgan = require('morgan')
 const mysql = require('mysql')
+const cors = require('cors')
+var bodyParser = require('body-parser');
 
 const app = express()
+
+app.use(cors())
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json())
 
 // app.use(morgan('short'))
 
@@ -14,14 +21,18 @@ var pool  = mysql.createPool({
     database        : 'testDB'
   });
 
-app.get('/testRetrive', (req, res) =>
+app.get('/userRetrieve/:username/:password', (req, res) =>
 {
-    const q = "SELECT * from user"
+    const username = req.params.username
+    const password = req.params.password
+    console.log(username, password)
+    const q = "SELECT id, username from user where username = '" + username + "' and password = '" + password + "';"
     pool.getConnection(function(err, connection)
     {
         if (err) 
         {
             console.log("could not connect" + err)
+            res.end()
         }
         connection.query(q, (err, result) =>
         {
@@ -30,9 +41,42 @@ app.get('/testRetrive', (req, res) =>
             if (err)
             {
                 console.log("could not search " + err)
+                res.sendStatus(500)
+                res.end()
                 return
             }
+            console.log(result)
             res.json(result)
+        })
+    })
+})
+
+app.post('/userPost', (req, res) => {
+    const username = req.body.username
+    const password = req.body.password
+    console.log(username, password)
+    const q = "INSERT INTO USER (username, password) VALUES (?,?)"
+    pool.getConnection(function(err, connection)
+    {
+        if (err) 
+        {
+            console.log("could not connect" + err)
+            res.end()
+        }
+        connection.query(q, [username, password], (err, results, field) =>
+        {
+            connection.release()
+            //console.log(result)
+            if (err)
+            {
+                console.log("could not search " + err)
+                res.sendStatus(500)
+                return
+            }
+            console.log("added user to database")
+            // res.send(results.id)
+            console.log(results.insertId)
+            res.send({id: results.insertId})       
         })
     })
 })

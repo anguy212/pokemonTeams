@@ -2,6 +2,10 @@ import React from "react";
 import { slide as Menu } from "react-burger-menu";
 
 const SideBar = (props) => {
+  const test = () => {
+    console.log("logout clicked")
+    localStorage.removeItem('user')
+  }
   return (
     // Pass on our props
     <Menu {...props}>
@@ -13,7 +17,7 @@ const SideBar = (props) => {
         Teams
       </a>
 
-      <a className="menu-item" href="/">
+      <a className="menu-item" href="/" onClick = {test}>
         Logout
       </a>
     </Menu>
