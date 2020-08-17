@@ -6,7 +6,7 @@ import SideBar from '../components/sidebar'
 
 function Profile() {
     const user = localStorage.getItem('user')
-    console.log(user)
+    //console.log(user)
     if(user === null)
     {
       return(

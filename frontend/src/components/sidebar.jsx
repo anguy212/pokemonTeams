@@ -3,7 +3,7 @@ import { slide as Menu } from "react-burger-menu";
 
 const SideBar = (props) => {
   const test = () => {
-    console.log("logout clicked")
+    //console.log("logout clicked")
     localStorage.removeItem('user')
   }
   return (
@@ -15,6 +15,10 @@ const SideBar = (props) => {
 
       <a className="menu-item" href="/teams">
         Teams
+      </a>
+
+      <a className= "menu-item" href="/catalogue">
+        Catalogue
       </a>
 
       <a className="menu-item" href="/" onClick = {test}>

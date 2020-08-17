@@ -9,9 +9,10 @@ body {
 }
 
 #page-wrap {
+  height: 100vh;
   text-align: center;
   overflow: auto;
-  top: 45%;
+  top: 20%;
   position: relative;
 }
 
