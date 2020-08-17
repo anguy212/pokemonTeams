@@ -47,16 +47,17 @@ const Pokemon = (props) =>
                     {data: [3,3,3,3,3,3]},
                 ]
             }
-    // console.log(props.info)
+    // console.log(props, "prop")
     useEffect(()=>
     {
-        
-        props.info.url.forEach(url => {
-            console.log(url)
+        const CancelToken = axios.CancelToken;
+        const source = CancelToken.source();
+        props.pokemon.url.forEach(url => {
+            // console.log(url)
             let cancel
-            axios.get(url, {
-                cancelToken: new axios.CancelToken(c => cancel = c)
-            }).then(res=>{
+            axios.get(url, 
+                {cancelToken: new axios.CancelToken(c => cancel = c)}
+            ).then(res=>{
                 // console.log(res)
                 var newData = [...data]
                 res.data.damage_relations.double_damage_to.forEach(type =>{
@@ -74,20 +75,21 @@ const Pokemon = (props) =>
                     // console.log(types.index[type.name])
                     newData[types.index[type.name]] = 0
                 })
-                console.log(newData, 'pokemondata', props.p.name)
+                // console.log(newData, 'pokemondata', props.name)
                 // setData([2,2,2,2,2,2,4,2,2,4,2,2,2,2,2,2,2])
                 setData(newData)
                 // console.log(data)
             })
+            return () => cancel()
         });
     }, [])
     return(
         <>
         {
-        props.info?.image ? 
+        props.pokemon?.image ? 
             <Card>
                 <text>
-                    {props.p.name}
+                    {props.name}
                 </text>
                 <Flippy
                     flipOnHover={true} // default false
@@ -104,10 +106,10 @@ const Pokemon = (props) =>
                     }}
                     >
                         <PokemonBox>
-                        <PokemonImage src = {props.info?.image}/>
+                        <PokemonImage src = {props.pokemon?.image}/>
                             <text>
                                 type:&nbsp;
-                                {props.info.type.map((t) => 
+                                {props.pokemon.type.map((t) => 
                                     (
                                         <text>
                                             {t}&nbsp;
@@ -118,8 +120,8 @@ const Pokemon = (props) =>
                     </FrontSide>
                     <BackSide
                     style={{ backgroundColor: '#175852'}}>
-                        {console.log(data, 'here')}
-                        {console.log(labels, 'labels')}
+                        {/* {console.log(data, 'here')}
+                        {console.log(labels, 'labels')} */}
                         
                         <Radar 
                                     data = {{labels: labels, datasets: [{data: data}]}}
