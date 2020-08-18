@@ -20,7 +20,6 @@ function Profile() {
       return (
         <div id="App">
           <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
-    
           <div id="page-wrap">
             <h1>Profile {user}</h1>
           </div>

@@ -8,34 +8,103 @@ const OuterContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-content: center;`;
+    align-content: center;
+    align-items:center;
+    paddiing: 10px 50px 10px, 50px;`
 
     //need to media qeury the width of buttons
     const Button = styled.button`
-    background-color: black;
+    background-color: #464647;
     color: white;
     font-size: 20px;
     padding: 10px 60px;
     border-radius: 5px;
-    margin: 10px 0px;
     cursor: pointer;
     align-items: center;
     align-content: center;
-    `;
+    @media(min-width:1227px){
+        margin-top: 40px 
+    }
+    @media(max-width:1226px){
+        margin-top: 25px;
+    }
+    `
 
     //need to media qeury the width of inputs
     const UserInput = styled.input`
     align-items: center;
     align-content: center;
     padding: 0 .5em 0 .5em;
-    margin: .4em 0;`
+    width: 70%;
+    @media(min-width:1227px){
+        margin-top: 30px;
+        height: 45px; 
+    }
+    @media(max-width:1226px){
+        margin-top: 20px;
+        height: 35px;
+    }`
 
     //need to change font style
     const NewUserLink = styled(Link)`
     text-align: center;
     justify-content: center;
     align-items: center;
-    align-content: center;`
+    align-content: center;
+    @media(min-width:1227px){
+        font-size: 20px;
+    }
+    @media(min-width:375px) and (max-width:1226px){
+        font-size: 17px;
+    }
+    font-size: 15px;`
+
+    const SignInPaper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    background-color: #3B4CCA;
+    flex-direction: column;
+    @media(min-width:1227px){
+        height: 500px;
+        width: 400px;
+        margin-right: 100px;
+        margin-left: 100px;
+        margin-bottom: 10px;
+    }
+    @media(min-width:375px) and (max-width:1226px){
+        height: 350px;
+        width: 280px;
+        margin-right: 100px;
+        margin-left: 100px;
+        margin-bottom: 10px;
+    }
+    height: 300px;
+    width: 240px;
+    margin-right: 100px;
+    margin-left: 100px;
+    margin-bottom: 10px;`
+
+    const PokemonImage = styled.img`
+    length: 100x;
+    width: 100px;
+    margin-bottom: -50px;
+    z-index: 2;
+    @media(min-width:1227px){
+        length: 180x;
+        width: 180px;
+        margin-bottom: -90px;
+    }
+    @media(min-width:375px) and (max-width:1226px){
+        length: 120x;
+        width: 120px;
+        margin-bottom: -60px;
+    }
+    length: 100x;
+    width: 100px;
+    margin-bottom: -50px;
+    `
 
 const SignUp = () => {
 
@@ -63,19 +132,23 @@ const SignUp = () => {
 
     return(
         <OuterContainer>
-            <UserInput 
-                type = "text" 
-                placeholder = "Username"  
-                value = {username} 
-                onChange = {(event)=>setUsername(event.target.value)}
-            />
-            <UserInput 
-                type = "text" 
-                placeholder = "Password" 
-                value = {password} 
-                onChange = {(event)=>setPassword(event.target.value)}
-            />
+            <PokemonImage src ={require('../constants/pokeball2.png')}/>
+            <SignInPaper>
+                <UserInput 
+                    type = "text" 
+                    placeholder = "Username"  
+                    value = {username} 
+                    onChange = {(event)=>setUsername(event.target.value)}
+                />
+                <UserInput 
+                    type = "text" 
+                    placeholder = "Password" 
+                    value = {password} 
+                    onChange = {(event)=>setPassword(event.target.value)}
+                />
             <Button onClick = {SignUp}>Sign Up!</Button>
+            </SignInPaper>
+            <NewUserLink to = "/"> Login? </NewUserLink>
         </OuterContainer>
       )
 }
