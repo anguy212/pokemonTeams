@@ -26,8 +26,8 @@ const OuterContainer = styled.div`
 
 const PaginationBar = styled.div`
   overflow: hidden;
-  background-color: grey;
-  height: 5em;
+  background-color: #91a3b0;
+  height: 4em;
   position: fixed;
   width: 100%;
   z-index: 2;
@@ -128,67 +128,97 @@ const Catalogue = () => {
         source.cancel("Cancelling in cleanup");}
     }
 
-    useEffect(() => {
+    async function getType(){
+      let source = axios.CancelToken.source();
+      const resp = await axios.get("https://pokeapi.co/api/v2/type/" + filterType)
+      // console.log(resp.data.pokemon)
+
+      setNextPageUrl(null)
+      setPrevPageUrl(null)
+      setPokemonList(resp.data.pokemon.map(p=> p.pokemon.name))
+
+      const url = resp.data.pokemon.map(p=>axios.get(p.pokemon.url))
+
+      var holderData = {}
+
+      axios.all(url, {
+        cancelToken: source.token,
+      }).then(axios.spread((...responses) => {
+        responses.forEach(r => {
+          // console.log(r)
+          var typeHolder = []
+          var urlHolder = []
+          r.data.types.map(t => {
+            typeHolder.push(t.type.name)
+            urlHolder.push(t.type.url)
+          })
+          holderData[r.data.name] = {image: r.data.sprites.front_default, url: urlHolder, type: typeHolder}
+        })
+        setPokemonInfo(holderData)
+        setLoading(false)
+        // use/access the results 
+      })).catch(errors => {
+        // react on errors.
+      }) 
+      return function () {
+        source.cancel("Cancelling in cleanup");}
+
+    }
+
+    function Searching(){
       setLoading(true)
+      let source = axios.CancelToken.source();
+      axios.get("https://pokeapi.co/api/v2/pokemon/" + search, {
+        cancelToken: source.token,
+      }).then((resp) => {
+        console.log(resp.data)
+        setPrevPageUrl(null)
+        setNextPageUrl(null)
+        setPokemonList([resp.data.name])
+        var holderData = {}
+        var typeHolder = []
+        var urlHolder = []
+        resp.data.types.map(t => {
+          typeHolder.push(t.type.name)
+          urlHolder.push(t.type.url)
+        })
+        holderData[resp.data.name] = {image: resp.data.sprites.front_default, url: urlHolder, type: typeHolder}
+        setPokemonInfo(holderData)
+        setLoading(false)
+      }).catch(errors => {
+        console.log(errors)
+      })
+      return function () {
+        source.cancel("Cancelling in cleanup");}
+    }
 
-      getResponse()
+    useEffect(() => {
+      if(special === "none"){
+        setLoading(true)
+        getResponse()
+      }
+      else if(special === "filter")
+      {
+        console.log("filter")
+        console.log(filterType)
+        if(filterType !== "")
+        {
+          setLoading(true)
+          getType()
+        }
+      }
+      else if(special === "search")
+      {
+        console.log(search)
+        Searching()
+        setSpecial("")
+
+      }
+
  
-    }, [currentPageUrl, numberPP])
-
-    // useEffect(() => {
-    //   const CancelToken = axios.CancelToken;
-    //   const source = CancelToken.source();
-
-    //   setLoading(true)
-    //   const fetchData = async () => {
-    //   const result = await axios.get(currentPageUrl, { cancelToken: source.token })
-    //   const data = result.data
-    //   setNextPageUrl(data.next)
-    //   setPrevPageUrl(data.previous)
-
-    //   // console.log(data)
-
-    //   // var holderArray = []
-    //   var holderData = {}
-      
-    //   data.results.map((p, index) =>
-    //   {
-    //     var typeHolder = []
-    //     var urlHolder = []
-    //     // console.log(p.name)
-    //     setPokemonList(pokemon=>[...pokemon, p.name])
-    //     let cancel
-    //     axios.get(p.url, 
-    //       {cancelToken: new axios.CancelToken(c => cancel = c)})
-    //     .then(res => { 
-    //       // console.log(res.data)
-    //       res.data.types.map((t) =>{
-    //         typeHolder.push(t.type.name)
-    //         urlHolder.push(t.type.url)
-    //       })
-    //       holderData[res.data.name] = {image: res.data.sprites.front_default, type: typeHolder, url: urlHolder}
-    //       index += 1
-    //       //this hardset 20 has to change after pagination
-    //       if(index === 20){
-    //         // console.log(holderData)
-    //         // console.log(pokemonList)
-    //         setPokemonInfo(holderData)
-    //         setLoading(false)
-    //       }
-    //     })
-    //     return () => {
-    //       source.cancel();
-    //   };
-    //   })
-    //   }
-    //   fetchData()
-    //   return () => {
-    //     source.cancel();
-    //   };
-    // }, [currentPageUrl, numberPP])
+    }, [currentPageUrl, numberPP, filterType, special])
 
     const user = localStorage.getItem('user')
-    // console.log(user)    
     if(user === null)
     {
       return(
@@ -199,7 +229,6 @@ const Catalogue = () => {
     }
     else
     {
-      if(loading) return "loading..."
       return (
         <div id="App">
           <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
@@ -212,17 +241,22 @@ const Catalogue = () => {
                     <UserInput 
                     type = "text" 
                     placeholder = "search..." 
-                    // value = {password} 
-                    // onChange = {(event)=>setPassword(event.target.value)}
+                    value = {search} 
+                    onChange = {
+                      (event)=>
+                      {
+                        setSearch(event.target.value)
+                      }}
                     />
-                    <Button>Go!</Button>
+                    <Button onClick = {() => setSpecial("search")}>Go!</Button>
                   </NavigationO>
                   <NavigationO>
                     {/* {special} */}
                     Filter type:&nbsp;
                     <SelectBar value = {filterType} 
                     onChange = {(event)=>{setFilterType(event.target.value)
-                                          setSpecial("filter")}}>
+                                          setSpecial("filter")
+                                          }}>
                       <option value = ""> none </option>
                       <option value = "normal"> normal </option>
                       <option value = "fighting"> fighting </option>
@@ -255,8 +289,10 @@ const Catalogue = () => {
                   <NavigationO>
                     Pokemon per Page:&nbsp;
                     <SelectBar value = {numberPP}
+                      onClick = {() => setSpecial("none") }
                       onChange = {(event)=>{
                         setNumberPP(event.target.value)
+                        setSpecial("none")
                         setCurrentPageUrl("https://pokeapi.co/api/v2/pokemon/?limit="+ event.target.value +"&offset=0")}}>
                       <option> 20 </option>
                       <option> 40 </option>
@@ -282,11 +318,17 @@ const Catalogue = () => {
                   </NavigationO>
                 </BarElementsContainer>
               </PaginationBar>
+              <>
+              {loading ? 
+              <text>loading</text>
+              : 
               <PokemonScroller>
                 {pokemonList.map((p, index) => (
                   <Pokemon key = {index} name = {p} pokemon = {pokemonInfo[p]}/>
                 ))}
               </PokemonScroller>
+              } 
+              </>
             </OuterContainer>
           </div>
       </div>

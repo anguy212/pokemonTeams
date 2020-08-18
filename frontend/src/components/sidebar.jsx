@@ -13,9 +13,9 @@ const SideBar = (props) => {
         Profile
       </a>
 
-      <a className="menu-item" href="/teams">
+      {/* <a className="menu-item" href="/teams">
         Teams
-      </a>
+      </a> */}
 
       <a className= "menu-item" href="/catalogue">
         Catalogue

@@ -15,7 +15,6 @@ const PokemonBox = styled.div`
     align-content: center;
     align-self: center;
     flex-direction: column;
-    border: 3px solid black;
     margin: .5em;
     padding: .5em`
 
@@ -36,7 +35,18 @@ const Card = styled.div`
     flex-direction: column;
     width: 300px;
     height: 300px;
-    margin: 1em;`
+    margin: 2em;`
+
+const T = styled.text`
+    font-family: Ketchum;
+    font-size: 35px;
+    margin-top: -1em;
+    `
+const T2 = styled.text`
+    font-family: Ketchum;
+    font-size: 25px;
+    margin-bottom: -4em;
+`
 
 const Pokemon = (props) =>
 {   
@@ -80,7 +90,9 @@ const Pokemon = (props) =>
                 setData(newData)
                 // console.log(data)
             })
-            return () => cancel()
+            return () => {
+                source.cancel();
+            };
         });
     }, [])
     return(
@@ -88,9 +100,6 @@ const Pokemon = (props) =>
         {
         props.pokemon?.image ? 
             <Card>
-                <text>
-                    {props.name}
-                </text>
                 <Flippy
                     flipOnHover={true} // default false
                     flipOnClick={true} // default false
@@ -102,11 +111,14 @@ const Pokemon = (props) =>
                 >
                     <FrontSide
                     style={{
-                        backgroundColor: '#41669d',
+                        backgroundColor: '#3d7dca',
                     }}
                     >
                         <PokemonBox>
                         <PokemonImage src = {props.pokemon?.image}/>
+                        <T>
+                            {props.name}
+                        </T>
                             <text>
                                 type:&nbsp;
                                 {props.pokemon.type.map((t) => 
@@ -119,10 +131,10 @@ const Pokemon = (props) =>
                             </PokemonBox>
                     </FrontSide>
                     <BackSide
-                    style={{ backgroundColor: '#175852'}}>
+                    style={{ backgroundColor: '#ffcb05'}}>
                         {/* {console.log(data, 'here')}
                         {console.log(labels, 'labels')} */}
-                        
+                        <T2>Strengths</T2>
                         <Radar 
                                     data = {{labels: labels, datasets: [{data: data}]}}
                                     width = {250}
@@ -134,7 +146,7 @@ const Pokemon = (props) =>
                                         }
                                     },
                                         title:{
-                                            display: true,
+                                            display: false,
                                             text: "Strengths"
                                         },
                                         legend:{
