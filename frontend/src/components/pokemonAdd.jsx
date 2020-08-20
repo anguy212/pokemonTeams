@@ -35,7 +35,7 @@ const Card = styled.div`
     flex-direction: column;
     width: 300px;
     height: 300px;
-    margin: .7em .25em .7em .25em;`
+    margin: 2em;`
 
 const T = styled.text`
     font-family: Ketchum;
@@ -48,7 +48,7 @@ const T2 = styled.text`
     margin-bottom: -4em;
 `
 
-const Pokemon = (props) =>
+const PokemonAdd = (props) =>
 {   
     const labels = types.names 
     const [data, setData] = useState(types.startData)
@@ -60,7 +60,6 @@ const Pokemon = (props) =>
     // console.log(props, "prop")
     useEffect(()=>
     {
-        // console.log(props)
         const CancelToken = axios.CancelToken;
         const source = CancelToken.source();
         props.pokemon.url.forEach(url => {
@@ -118,7 +117,7 @@ const Pokemon = (props) =>
                         <PokemonBox>
                         <PokemonImage src = {props.pokemon?.image}/>
                         <T>
-                            {props.pokemon.name}
+                            {props.name}
                         </T>
                             <text>
                                 type:&nbsp;
@@ -170,4 +169,4 @@ const Pokemon = (props) =>
     )
 }
 
-export default Pokemon
+export default PokemonAdd

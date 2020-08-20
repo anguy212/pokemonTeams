@@ -76,6 +76,8 @@ const UserInput = styled.input`
 const Catalogue = () => {
     const [pokemonList, setPokemonList] = useState([])
 
+    const [searchablePokeList, setSerachablePokeList] = useState([])
+
     const [pokemonInfo, setPokemonInfo] = useState([])
 
     const [filterType, setFilterType] = useState("none")
@@ -86,7 +88,11 @@ const Catalogue = () => {
 
     const [numberPP, setNumberPP] =  useState(20)
 
-    const [currentPageUrl, setCurrentPageUrl] = useState("https://pokeapi.co/api/v2/pokemon/?limit=20&offset=0")
+    const [numberS, setNumberS] = useState(0)
+
+    const [numberE, setNumberE] = useState(20)
+
+    const [currentPageUrl, setCurrentPageUrl] = useState("https://pokeapi.co/api/v2/pokemon/?limit=1048&offset=0")
     const [nextPageUrl, setNextPageUrl] = useState("")
     const [prevPageUrl, setPrevPageUrl] = useState("")
     const [loading, setLoading] = useState(true)
@@ -103,7 +109,7 @@ const Catalogue = () => {
 
       // console.log(url, "urls")
 
-      var holderData = {}
+      var holderData = []
 
       axios.all(url, {
         cancelToken: source.token,
@@ -112,113 +118,113 @@ const Catalogue = () => {
           // console.log(r)
           var typeHolder = []
           var urlHolder = []
+          var monData = {}
           r.data.types.map(t => {
             typeHolder.push(t.type.name)
             urlHolder.push(t.type.url)
           })
-          holderData[r.data.name] = {image: r.data.sprites.front_default, url: urlHolder, type: typeHolder}
+          monData = { id: r.data.id, name: r.data.name, image: r.data.sprites.front_default, url: urlHolder, type: typeHolder}
+          holderData.push(monData)
         })
         setPokemonInfo(holderData)
         setLoading(false)
+        // console.log(holderData)
         // use/access the results 
       })).catch(errors => {
         // react on errors.
       }) 
+      // setSerachablePokeList(pokemonInfo)
       return function () {
         source.cancel("Cancelling in cleanup");}
     }
 
-    async function getType(){
-      let source = axios.CancelToken.source();
-      const resp = await axios.get("https://pokeapi.co/api/v2/type/" + filterType)
-      // console.log(resp.data.pokemon)
+    // async function getType(){
+    //   let source = axios.CancelToken.source();
+    //   const resp = await axios.get("https://pokeapi.co/api/v2/type/" + filterType)
+    //   // console.log(resp.data.pokemon)
 
-      setNextPageUrl(null)
-      setPrevPageUrl(null)
-      setPokemonList(resp.data.pokemon.map(p=> p.pokemon.name))
+    //   setNextPageUrl(null)
+    //   setPrevPageUrl(null)
+    //   setPokemonList(resp.data.pokemon.map(p=> p.pokemon.name))
 
-      const url = resp.data.pokemon.map(p=>axios.get(p.pokemon.url))
+    //   const url = resp.data.pokemon.map(p=>axios.get(p.pokemon.url))
 
-      var holderData = {}
+    //   var holderData = {}
 
-      axios.all(url, {
-        cancelToken: source.token,
-      }).then(axios.spread((...responses) => {
-        responses.forEach(r => {
-          // console.log(r)
-          var typeHolder = []
-          var urlHolder = []
-          r.data.types.map(t => {
-            typeHolder.push(t.type.name)
-            urlHolder.push(t.type.url)
-          })
-          holderData[r.data.name] = {image: r.data.sprites.front_default, url: urlHolder, type: typeHolder}
-        })
-        setPokemonInfo(holderData)
-        setLoading(false)
-        // use/access the results 
-      })).catch(errors => {
-        // react on errors.
-      }) 
-      return function () {
-        source.cancel("Cancelling in cleanup");}
+    //   axios.all(url, {
+    //     cancelToken: source.token,
+    //   }).then(axios.spread((...responses) => {
+    //     responses.forEach(r => {
+    //       // console.log(r)
+    //       var typeHolder = []
+    //       var urlHolder = []
+    //       r.data.types.map(t => {
+    //         typeHolder.push(t.type.name)
+    //         urlHolder.push(t.type.url)
+    //       })
+    //       holderData[r.data.name] = {image: r.data.sprites.front_default, url: urlHolder, type: typeHolder}
+    //     })
+    //     setPokemonInfo(holderData)
+    //     // console.log(pokemonInfo)
+    //     setLoading(false)
+    //     // use/access the results 
+    //   })).catch(errors => {
+    //     // react on errors.
+    //   }) 
+    //   return function () {
+    //     source.cancel("Cancelling in cleanup");}
 
-    }
+    // }
 
-    function Searching(){
-      setLoading(true)
-      let source = axios.CancelToken.source();
-      axios.get("https://pokeapi.co/api/v2/pokemon/" + search, {
-        cancelToken: source.token,
-      }).then((resp) => {
-        console.log(resp.data)
-        setPrevPageUrl(null)
-        setNextPageUrl(null)
-        setPokemonList([resp.data.name])
-        var holderData = {}
-        var typeHolder = []
-        var urlHolder = []
-        resp.data.types.map(t => {
-          typeHolder.push(t.type.name)
-          urlHolder.push(t.type.url)
-        })
-        holderData[resp.data.name] = {image: resp.data.sprites.front_default, url: urlHolder, type: typeHolder}
-        setPokemonInfo(holderData)
-        setLoading(false)
-      }).catch(errors => {
-        console.log(errors)
-      })
-      return function () {
-        source.cancel("Cancelling in cleanup");}
-    }
+    // function Searching(){
+    //   setLoading(true)
+    //   let source = axios.CancelToken.source();
+    //   axios.get("https://pokeapi.co/api/v2/pokemon/" + search, {
+    //     cancelToken: source.token,
+    //   }).then((resp) => {
+    //     console.log(resp.data)
+    //     setPrevPageUrl(null)
+    //     setNextPageUrl(null)
+    //     setPokemonList([resp.data.name])
+    //     var holderData = {}
+    //     var typeHolder = []
+    //     var urlHolder = []
+    //     resp.data.types.map(t => {
+    //       typeHolder.push(t.type.name)
+    //       urlHolder.push(t.type.url)
+    //     })
+    //     holderData[resp.data.name] = {image: resp.data.sprites.front_default, url: urlHolder, type: typeHolder}
+    //     setPokemonInfo(holderData)
+    //     setLoading(false)
+    //   }).catch(errors => {
+    //     console.log(errors)
+    //   })
+    //   return function () {
+    //     source.cancel("Cancelling in cleanup");}
+    // }
 
     useEffect(() => {
-      if(special === "none"){
-        setLoading(true)
-        getResponse()
-      }
-      else if(special === "filter")
-      {
-        console.log("filter")
-        console.log(filterType)
-        if(filterType !== "")
-        {
-          setLoading(true)
-          getType()
-        }
-      }
-      else if(special === "search")
-      {
-        console.log(search)
-        Searching()
-        setSpecial("")
+      setLoading(true)
+      getResponse()
+    }, [])
 
-      }
+    useEffect(() => {
+      setSerachablePokeList(pokemonInfo)
+    }, [pokemonInfo])
 
- 
-    }, [currentPageUrl, numberPP, filterType, special])
+    function searchPokemon(s) {
+      console.log(s)
+      var holderTableReturn = pokemonInfo.filter((element) =>
+      {
+        return element.name.includes(s) 
+      })
+      // console.log(holderTableReturn)
+      setSerachablePokeList(holderTableReturn)
+    }
 
     const user = localStorage.getItem('user')
+
+    // console.log(pokemonInfo)
     if(user === null)
     {
       return(
@@ -246,6 +252,7 @@ const Catalogue = () => {
                       (event)=>
                       {
                         setSearch(event.target.value)
+                        searchPokemon(event.target.value)
                       }}
                     />
                     <Button onClick = {() => setSpecial("search")}>Go!</Button>
@@ -289,11 +296,10 @@ const Catalogue = () => {
                   <NavigationO>
                     Pokemon per Page:&nbsp;
                     <SelectBar value = {numberPP}
-                      onClick = {() => setSpecial("none") }
                       onChange = {(event)=>{
                         setNumberPP(event.target.value)
-                        setSpecial("none")
-                        setCurrentPageUrl("https://pokeapi.co/api/v2/pokemon/?limit="+ event.target.value +"&offset=0")}}>
+                        setNumberE(numberS+Number(event.target.value))
+                        setSpecial("none")}}>
                       <option> 20 </option>
                       <option> 40 </option>
                       <option> 100 </option>
@@ -301,17 +307,21 @@ const Catalogue = () => {
                   </NavigationO>
                   <NavigationO>
                     <Button
-                      onClick = {() => {if(prevPageUrl !== null) {
-                        console.log(prevPageUrl)
-                        setCurrentPageUrl(prevPageUrl)
+                      onClick = {() => {
+                        if(numberS - numberPP >= null) {
+                        console.log(numberS - numberPP, "new offset")
+                        setNumberS(numberS - numberPP)
+                        setNumberE(numberE - numberPP)
                       }}}
                     >
                       Back
                     </Button>
                     <Button
-                      onClick = {() => {if(nextPageUrl !== null) {
-                        console.log(nextPageUrl, "NEXT PAGE URL")
-                        setCurrentPageUrl(nextPageUrl)
+                      onClick = {() => {
+                        if(numberS +  numberPP < 1048) {
+                        console.log(numberS +  numberPP, "new offset")
+                        setNumberS(numberS + numberPP)
+                        setNumberE(numberE + numberPP)
                       }}}>
                       Next
                     </Button>
@@ -323,8 +333,8 @@ const Catalogue = () => {
               <text>loading</text>
               : 
               <PokemonScroller>
-                {pokemonList.map((p, index) => (
-                  <Pokemon key = {index} name = {p} pokemon = {pokemonInfo[p]}/>
+                {searchablePokeList.slice(numberS,numberE).map((p, index) => (
+                  <Pokemon key = {index} pokemon = {p}/>
                 ))}
               </PokemonScroller>
               } 
