@@ -69,7 +69,7 @@ const NavigationO = styled.div`
 const UserInput = styled.input`
     align-items: center;
     align-content: center;
-    width: 80px;
+    width: 100px;
     padding: 0 .5em 0 .5em;
     margin: .4em 0;`
 
@@ -138,71 +138,6 @@ const Catalogue = () => {
         source.cancel("Cancelling in cleanup");}
     }
 
-    // async function getType(){
-    //   let source = axios.CancelToken.source();
-    //   const resp = await axios.get("https://pokeapi.co/api/v2/type/" + filterType)
-    //   // console.log(resp.data.pokemon)
-
-    //   setNextPageUrl(null)
-    //   setPrevPageUrl(null)
-    //   setPokemonList(resp.data.pokemon.map(p=> p.pokemon.name))
-
-    //   const url = resp.data.pokemon.map(p=>axios.get(p.pokemon.url))
-
-    //   var holderData = {}
-
-    //   axios.all(url, {
-    //     cancelToken: source.token,
-    //   }).then(axios.spread((...responses) => {
-    //     responses.forEach(r => {
-    //       // console.log(r)
-    //       var typeHolder = []
-    //       var urlHolder = []
-    //       r.data.types.map(t => {
-    //         typeHolder.push(t.type.name)
-    //         urlHolder.push(t.type.url)
-    //       })
-    //       holderData[r.data.name] = {image: r.data.sprites.front_default, url: urlHolder, type: typeHolder}
-    //     })
-    //     setPokemonInfo(holderData)
-    //     // console.log(pokemonInfo)
-    //     setLoading(false)
-    //     // use/access the results 
-    //   })).catch(errors => {
-    //     // react on errors.
-    //   }) 
-    //   return function () {
-    //     source.cancel("Cancelling in cleanup");}
-
-    // }
-
-    // function Searching(){
-    //   setLoading(true)
-    //   let source = axios.CancelToken.source();
-    //   axios.get("https://pokeapi.co/api/v2/pokemon/" + search, {
-    //     cancelToken: source.token,
-    //   }).then((resp) => {
-    //     console.log(resp.data)
-    //     setPrevPageUrl(null)
-    //     setNextPageUrl(null)
-    //     setPokemonList([resp.data.name])
-    //     var holderData = {}
-    //     var typeHolder = []
-    //     var urlHolder = []
-    //     resp.data.types.map(t => {
-    //       typeHolder.push(t.type.name)
-    //       urlHolder.push(t.type.url)
-    //     })
-    //     holderData[resp.data.name] = {image: resp.data.sprites.front_default, url: urlHolder, type: typeHolder}
-    //     setPokemonInfo(holderData)
-    //     setLoading(false)
-    //   }).catch(errors => {
-    //     console.log(errors)
-    //   })
-    //   return function () {
-    //     source.cancel("Cancelling in cleanup");}
-    // }
-
     useEffect(() => {
       setLoading(true)
       getResponse()
@@ -213,13 +148,33 @@ const Catalogue = () => {
     }, [pokemonInfo])
 
     function searchPokemon(s) {
-      console.log(s)
+      setNumberE(20)
+      setNumberS(0)
       var holderTableReturn = pokemonInfo.filter((element) =>
       {
         return element.name.includes(s) 
       })
       // console.log(holderTableReturn)
       setSerachablePokeList(holderTableReturn)
+    }
+
+    function FilterByType(s) {
+      setNumberE(20)
+      setNumberS(0)
+      if (s === "")
+      {
+        // console.log("none filter type")
+        // console.log(pokemonInfo)
+        setSerachablePokeList(pokemonInfo)
+      }
+      else
+      {
+        var holderTableReturn = pokemonInfo.filter((element) =>
+        {
+          return element.type.includes(s) 
+        })
+        setSerachablePokeList(holderTableReturn)
+      }
     }
 
     const user = localStorage.getItem('user')
@@ -255,14 +210,13 @@ const Catalogue = () => {
                         searchPokemon(event.target.value)
                       }}
                     />
-                    <Button onClick = {() => setSpecial("search")}>Go!</Button>
                   </NavigationO>
                   <NavigationO>
                     {/* {special} */}
                     Filter type:&nbsp;
                     <SelectBar value = {filterType} 
                     onChange = {(event)=>{setFilterType(event.target.value)
-                                          setSpecial("filter")
+                                          FilterByType(event.target.value)
                                           }}>
                       <option value = ""> none </option>
                       <option value = "normal"> normal </option>
@@ -297,7 +251,7 @@ const Catalogue = () => {
                     Pokemon per Page:&nbsp;
                     <SelectBar value = {numberPP}
                       onChange = {(event)=>{
-                        setNumberPP(event.target.value)
+                        setNumberPP(Number(event.target.value))
                         setNumberE(numberS+Number(event.target.value))
                         setSpecial("none")}}>
                       <option> 20 </option>
@@ -308,7 +262,7 @@ const Catalogue = () => {
                   <NavigationO>
                     <Button
                       onClick = {() => {
-                        if(numberS - numberPP >= null) {
+                        if(numberS - numberPP >= 0) {
                         console.log(numberS - numberPP, "new offset")
                         setNumberS(numberS - numberPP)
                         setNumberE(numberE - numberPP)
