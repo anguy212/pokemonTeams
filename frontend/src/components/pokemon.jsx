@@ -4,10 +4,7 @@ import axios from 'axios'
 import {Radar} from 'react-chartjs-2'
 import types from '../constants/typesIndex'
 import Flippy, { FrontSide, BackSide } from 'react-flippy';
-import {useLocation, Redirect, useHistory, Link} from 'react-router-dom';
-
-// let history = useHistory()
-
+import {useHistory, Link} from 'react-router-dom';
 
 const PokemonBox = styled.div`
     display: flex;
@@ -50,6 +47,8 @@ const T2 = styled.text`
 
 const Pokemon = (props) =>
 {   
+    let history = useHistory()
+
     const labels = types.names 
     const [data, setData] = useState(types.startData)
     const chartDataExample = {labels: ["test1", "test2", "test3", "test4", "test5", "test6"],
@@ -163,7 +162,8 @@ const Pokemon = (props) =>
             </Card> 
         :
         
-        <Redirect to="/catalogue"></Redirect>
+        <div>
+        </div>
 
         }
         </>

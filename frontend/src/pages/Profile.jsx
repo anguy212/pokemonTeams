@@ -150,14 +150,19 @@ const Button2 = styled.button`
     `
 const TeamAdd = styled.div`
     display: flex;
+    width:320px; 
+    height:240px;
+    margin-top:-120px; 
+    margin-left:-160px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     align-content: center;
     position: fixed;
-    height: 100px;
+    top:50%; 
+    left:50%;
     bottom: 50%;
-    right: 40%;
+    right: 50%;
     background-color: white;
     border: 3px solid #f1f1f1;
     z-index: 9;

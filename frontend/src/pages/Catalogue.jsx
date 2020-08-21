@@ -24,14 +24,17 @@ const OuterContainer = styled.div`
   align-items: stretch;
   z-index: 1;`
 
-const PaginationBar = styled.div`
-  overflow: hidden;
+  const PaginationBar = styled.div`
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
   background-color: #91a3b0;
   height: 4em;
   position: fixed;
   width: 100%;
   z-index: 2;
-  padding: 1% 3% 1% 10%;`
+  padding: 1% 3% 1% 3%;`
 
 const BarElementsContainer = styled.div`
   display: flex;
