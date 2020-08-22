@@ -96,8 +96,6 @@ const Catalogue = () => {
     const [numberE, setNumberE] = useState(20)
 
     const [currentPageUrl, setCurrentPageUrl] = useState("https://pokeapi.co/api/v2/pokemon/?limit=1048&offset=0")
-    const [nextPageUrl, setNextPageUrl] = useState("")
-    const [prevPageUrl, setPrevPageUrl] = useState("")
     const [loading, setLoading] = useState(true)
     
     async function getResponse(){
@@ -105,9 +103,7 @@ const Catalogue = () => {
       const resp = await axios.get(currentPageUrl)
       // console.log(resp.data, "data")
       const url = resp.data.results.map(p => axios.get(p.url))
-      
-      setNextPageUrl(resp.data.next)
-      setPrevPageUrl(resp.data.previous)
+
       setPokemonList(resp.data.results.map(p=> p.name))
 
       // console.log(url, "urls")

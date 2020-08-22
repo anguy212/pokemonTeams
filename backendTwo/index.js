@@ -81,6 +81,67 @@ app.post('/userPost', (req, res) => {
     })
 })
 
+app.post('/addNewTeam', (req, res) => {
+    const uid = req.body.user
+    const team = req.body.name
+    const p1 = req.body.p1
+    const p2 = req.body.p2
+    const p3 = req.body.p3
+    const p1Image = req.body.p1Image
+    const p2Image = req.body.p2Image
+    const p3Image = req.body.p3Image
+    const normal = req.body.normal 
+    const fighting = req.body.fighting
+    const flying = req.body.flying
+    const poison = req.body.poison
+    const ground = req.body.ground
+    const rock = req.body.rock
+    const bug = req.body.bug
+    const ghost = req.body.ghost
+    const steel = req.body.steel
+    const fire = req.body.fire
+    const water = req.body.water
+    const grass = req.body.grass
+    const electric = req.body.electric
+    const psychic = req.body.psychic
+    const ice = req.body.ice
+    const dragon = req.body.dragon
+    const dark = req.body.dark
+    const fairy = req.body.fairy
+    const date = 0
+    console.log(username, password)
+    const q = 
+    "INSERT INTO TEAMS (uid, team, p1, p2, p3, p1Image, p2Image, p3Image," +
+    "normal, fighting, flying, poison, ground, rock, bug, ghost, steel, fire, water, grass, electric, " +
+    "psychic, ice, dragon, dark, fairy, date)" +
+    "VALUES (?,?)"
+    pool.getConnection(function(err, connection)
+    {
+        if (err) 
+        {
+            console.log("could not connect" + err)
+            res.end()
+        }
+        connection.query(q, [uid, team, p1, p2, p3, p1Image, p2Image, p3Image, normal, fighting,
+        flying, poison, ground, rock, bug, steel, fire, water, grass, electric, psychic,
+        ice, dragon, dark, fairy, date], (err, results, field) =>
+        {
+            connection.release()
+            //console.log(result)
+            if (err)
+            {
+                console.log("could not search " + err)
+                res.sendStatus(500)
+                return
+            }
+            console.log("added user to database")
+            // res.send(results.id)
+            console.log(results.insertId)
+            res.send({id: results.insertId})       
+        })
+    })
+})
+
 app.listen(8000, () =>
 {
     console.log("server up and listening on localhost:8000")

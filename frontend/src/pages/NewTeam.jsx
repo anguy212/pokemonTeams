@@ -4,13 +4,15 @@ import styled from 'styled-components'
 import SideBar from '../components/sidebar'
 import Pokemon from '../components/pokemon'
 import axios from 'axios'
+import types from '../constants/typesIndex'
+
 
 const ListofPokemons = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 8em;
+  margin-top: 12em;
   z-index: 1;
 `
   // @media(min-width:995px) and (max-width:1330px){
@@ -47,7 +49,7 @@ const PaginationBar = styled.div`
   align-content: center;
   align-items: center;
   background-color: #91a3b0;
-  height: 5.9em;
+  height: 9em;
   position: fixed;
   width: 100%;
   z-index: 3;
@@ -82,7 +84,7 @@ const BarElementsContainer0 = styled.div`
   align-items: center;
   height: 80%;
   width: 90%;
-  padding: 10px 10px 0px 10px;
+  padding: 0px 10px 0px 10px;
   `
 
 const EmptyBox = styled.div`
@@ -125,39 +127,81 @@ const PickPokemon = styled.button`
 `
 
 const YellowCircle = styled.div`
-      width: 50px;
-      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      align-items: center;
+      width: 90px;
+      height: 90px;
       margin-right: 2%;
-      margin-left: 4px;
+      margin-left: 2%;
       -webkit-border-radius: 25px;
       -moz-border-radius: 25px;
       border-radius: 90px;
       background: #FFDE00;`
 
 const BlueCircle = styled.div`
-      width: 50px;
-      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      align-items: center;    
+      width: 90px;
+      height: 90px;
       margin-right: 2%;
-      margin-left: 4px;
+      margin-left: 2%;
       -webkit-border-radius: 25px;
       -moz-border-radius: 25px;
       border-radius: 90px;
       background: #3B4CCA;`
 
 const RedCircle = styled.div`
-      width: 50px;
-      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      align-items: center;
+      width: 90px;
+      height: 90px;
       margin-right: 2%;
-      margin-left: 4px;
+      margin-left: 2%;
       -webkit-border-radius: 25px;
       -moz-border-radius: 25px;
       border-radius: 90px;
       background: #CC0000;`
 
 const PokemonImage = styled.img`
-      width: 50px;
-      height: 50px;
+      width: 70px;
+      height: 70px;
       align-self: center`
+
+const TeamAdd = styled.div`
+      display: flex;
+      width:320px; 
+      height:350px;
+      margin-top:-120px; 
+      margin-left:-160px;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      align-content: center;
+      position: fixed;
+      top:50%; 
+      left:50%;
+      bottom: 50%;
+      right: 50%;
+      background-color: white;
+      border: 3px solid #f1f1f1;
+      z-index: 9;
+  `
+const MessageHolder = styled.div`
+      display: flex;
+      flex-direction: row;
+      margin-top: 10px;
+`
+
+const MessageHolderColumn = styled.div`
+      display: flex;
+      flex-direction: column;
+`
 
 const NewTeam = () => {
     const [pokemonList, setPokemonList] = useState([])
@@ -167,6 +211,8 @@ const NewTeam = () => {
     const [searchablePokeList, setSerachablePokeList] = useState([])
 
     const [pokemonInfo, setPokemonInfo] = useState([])
+
+    const [donePicking, setDonePicking] = useState(false)
 
     const [filterType, setFilterType] = useState("none")
 
@@ -181,9 +227,9 @@ const NewTeam = () => {
     const [numberE, setNumberE] = useState(20)
 
     const [currentPageUrl, setCurrentPageUrl] = useState("https://pokeapi.co/api/v2/pokemon/?limit=1048&offset=0")
-    const [nextPageUrl, setNextPageUrl] = useState("")
-    const [prevPageUrl, setPrevPageUrl] = useState("")
     const [loading, setLoading] = useState(true)
+    const strengths = types.strengths
+
     
     async function getResponse(){
       let source = axios.CancelToken.source();
@@ -191,8 +237,6 @@ const NewTeam = () => {
       // console.log(resp.data, "data")
       const url = resp.data.results.map(p => axios.get(p.url))
       
-      setNextPageUrl(resp.data.next)
-      setPrevPageUrl(resp.data.previous)
       setPokemonList(resp.data.results.map(p=> p.name))
 
       // console.log(url, "urls")
@@ -265,6 +309,28 @@ const NewTeam = () => {
       }
     }
 
+    function PickedPokemon(index){
+      if(donePicking === false)
+      {
+        setPokemonPicked(pokemonPicked => [...pokemonPicked, searchablePokeList[index]])
+        if (pokemonPicked.length === 2) 
+        {
+          console.log("had 3")
+          setDonePicking(true)
+        }
+      }
+    }
+
+    function pickAgain(){
+      setDonePicking(false)
+      setPokemonPicked([])
+    }
+
+    function addTeamToDatabase(){
+      console.log("add to firebase", pokemonPicked[0], pokemonPicked[1], pokemonPicked[2])
+      
+    }
+
     const user = localStorage.getItem('user')
     const teamName = localStorage.getItem('team')
 
@@ -286,7 +352,6 @@ const NewTeam = () => {
             <FirstContainer>
               <PaginationBar>
                 <BarElementsContainer0>
-                  Team {teamName}:
                   {/* {pokemonPicked.map(p => 
                     (
                       <RedCircle>
@@ -413,16 +478,63 @@ const NewTeam = () => {
                 {searchablePokeList.slice(numberS,numberE).map((p, index) => (
                   <PickPokemon onClick = {()=> 
                     {
-                      console.log(index)
-                      setPokemonPicked(pokemonPicked => [...pokemonPicked, searchablePokeList[index]])
-                      console.log(pokemonPicked)
+                      PickedPokemon(index)
                     }}>
                     <Pokemon key = {index} pokemon = {p}/>
                   </PickPokemon>
                 ))}
               </ListofPokemons>
               } 
-              </>
+              {donePicking?
+                <TeamAdd>
+                  <MessageHolder>
+                    Team {teamName}!
+                  </MessageHolder>
+                  <MessageHolder>
+                    <RedCircle> 
+                      <>
+                      {pokemonPicked[0]? 
+                      <PokemonImage src = {pokemonPicked[0].image}/>
+                      : 
+                      <div></div> }
+                      </>
+                    </RedCircle>
+                    <YellowCircle>
+                      <>
+                      {pokemonPicked[1]? 
+                      
+                      <PokemonImage src = {pokemonPicked[1].image}/>
+                      : 
+                      <div></div> }
+                      </>
+                    </YellowCircle>
+                  </MessageHolder>
+                  <MessageHolder>
+                    <BlueCircle>
+                        <>
+                        {pokemonPicked[2]? 
+                        <PokemonImage src = {pokemonPicked[2].image}/>
+                        : 
+                        <div></div> }
+                        </>
+                    </BlueCircle>
+                  </MessageHolder>
+                  <MessageHolder>
+                    Is this team okay?
+                  </MessageHolder>
+                  <MessageHolderColumn>
+                    <Button onClick = {()=>addTeamToDatabase()}>
+                      Ok!
+                    </Button>
+                    <Button onClick = {()=>pickAgain()}>
+                      No!
+                    </Button>
+                  </MessageHolderColumn>
+                </TeamAdd>
+              :
+                <></>
+              }
+            </>
             </FirstContainer>
           </div>
       </div>
