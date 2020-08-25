@@ -51,11 +51,12 @@ const Pokemon = (props) =>
     const labels = types.names 
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
+
     useEffect(()=>
     {
         setLoading(true)
         var s = []
-        s = strengths[props.pokemon.type[0]]
+        s = [...strengths[props.pokemon.type[0]]]
         if(props.pokemon.type.length === 2){
           for (var i=0; i<s.length; i++)
           {
@@ -68,6 +69,7 @@ const Pokemon = (props) =>
         setData(s)
         setLoading(false)
     }, [])
+
     return(
         <>
         {

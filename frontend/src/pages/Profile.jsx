@@ -17,10 +17,15 @@ const Hat = styled.img`
     margin-bottom: -90px;
     z-index: 2;
     opacity: .8;
-    @media(max-width:814px){
+    @media(max-width:814px)and(min-width:450){
       height: 80px;
       width: 80px;
       margin-bottom: -60px;
+    }
+    @media(max-width:449px){
+      height: 50px;
+      width: 50px;
+      margin-bottom: -70px;
     }
     `
 const Username = styled.h1`

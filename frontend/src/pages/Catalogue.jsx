@@ -121,11 +121,11 @@ const Catalogue = () => {
 
     const [search, setSearch] = useState("")
 
-    const [numberPP, setNumberPP] =  useState(20)
+    const [numberPP, setNumberPP] =  useState(12)
 
     const [numberS, setNumberS] = useState(0)
 
-    const [numberE, setNumberE] = useState(20)
+    const [numberE, setNumberE] = useState(12)
 
     const [currentPageUrl, setCurrentPageUrl] = useState("https://pokeapi.co/api/v2/pokemon/?limit=910&offset=0")
 
@@ -264,16 +264,15 @@ const Catalogue = () => {
                         setNumberPP(Number(event.target.value))
                         setNumberE(numberS+Number(event.target.value))
                       }}>
-                      <option> 20 </option>
-                      <option> 40 </option>
-                      <option> 100 </option>
+                      <option> 12 </option>
+                      <option> 24 </option>
+                      <option> 72 </option>
                     </SelectBar>
                   </NavigationO>
                   <NavigationO>
                     <Button1
                       onClick = {() => {
                         if(numberS - numberPP >= 0) {
-                        console.log(numberS - numberPP, "new offset")
                         setNumberS(numberS - numberPP)
                         setNumberE(numberE - numberPP)
                       }}}
@@ -283,7 +282,6 @@ const Catalogue = () => {
                     <Button
                       onClick = {() => {
                         if(numberS +  numberPP < 1048) {
-                        console.log(numberS +  numberPP, "new offset")
                         setNumberS(numberS + numberPP)
                         setNumberE(numberE + numberPP)
                       }}}>

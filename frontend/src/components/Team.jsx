@@ -18,7 +18,7 @@ const TeamContainer = styled.div`
         margin-bottom: 15px;
         height: 200px;
     }
-    @media(min-width:375px) and (max-width:1199px){
+    @media(min-width:300px) and (max-width:1199px){
         margin-top: 30px;
         margin-bottom: 15px;
         height: 230px;
@@ -126,11 +126,6 @@ const PokemonImageBar = styled.div`
 
 const Team = (props) =>
 {
-    useEffect(()=>{
-        console.log(props.team.team)
-        console.log(types.names)
-        console.log(data, "data")
-    }, [])
     const labels = types.names 
     const data = [props.team.normal, //0
                   props.team.fighting, //1
