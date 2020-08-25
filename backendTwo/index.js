@@ -21,6 +21,35 @@ var pool  = mysql.createPool({
     database        : 'testDB'
   });
 
+app.get('/teamRetrieve/:id', (req, res)=>
+{
+    const uid = req.body.id
+    const q = "SELECT * from TEAMS WHERE UID = " + 1 + ";"
+    pool.getConnection(function(err, connection)
+    {
+        if (err) 
+        {
+            console.log("could not connect" + err)
+            res.end()
+        }
+        connection.query(q, (err, result) =>
+        {
+            connection.release()
+            if (err)
+            {
+                console.log("could not search " + err)
+                res.sendStatus(500)
+                res.end()
+                return
+            }
+            console.log(result)
+            res.json(result)
+        })
+    })
+} 
+)
+
+
 app.get('/userRetrieve/:username/:password', (req, res) =>
 {
     const username = req.params.username
@@ -40,12 +69,10 @@ app.get('/userRetrieve/:username/:password', (req, res) =>
             //console.log(result)
             if (err)
             {
-                console.log("could not search " + err)
                 res.sendStatus(500)
                 res.end()
                 return
             }
-            console.log(result)
             res.json(result)
         })
     })
@@ -54,7 +81,6 @@ app.get('/userRetrieve/:username/:password', (req, res) =>
 app.post('/userPost', (req, res) => {
     const username = req.body.username
     const password = req.body.password
-    console.log(username, password)
     const q = "INSERT INTO USER (username, password) VALUES (?,?)"
     pool.getConnection(function(err, connection)
     {
@@ -66,16 +92,12 @@ app.post('/userPost', (req, res) => {
         connection.query(q, [username, password], (err, results, field) =>
         {
             connection.release()
-            //console.log(result)
             if (err)
             {
                 console.log("could not search " + err)
                 res.sendStatus(500)
                 return
             }
-            console.log("added user to database")
-            // res.send(results.id)
-            console.log(results.insertId)
             res.send({id: results.insertId})       
         })
     })
@@ -83,7 +105,7 @@ app.post('/userPost', (req, res) => {
 
 app.post('/addNewTeam', (req, res) => {
     const uid = req.body.user
-    const team = req.body.name
+    const team = req.body.team
     const p1 = req.body.p1
     const p2 = req.body.p2
     const p3 = req.body.p3
@@ -108,13 +130,11 @@ app.post('/addNewTeam', (req, res) => {
     const dragon = req.body.dragon
     const dark = req.body.dark
     const fairy = req.body.fairy
-    const date = 0
-    console.log(username, password)
-    const q = 
-    "INSERT INTO TEAMS (uid, team, p1, p2, p3, p1Image, p2Image, p3Image," +
-    "normal, fighting, flying, poison, ground, rock, bug, ghost, steel, fire, water, grass, electric, " +
-    "psychic, ice, dragon, dark, fairy, date)" +
-    "VALUES (?,?)"
+    const date = req.body.date
+    const q = "INSERT INTO TEAMS(p1, p2, p3, p1Image, p2Image, p3Image," +
+    "normal, fighting, poison, ground, rock, bug, ghost, steel, fire, water, grass, electric," +
+    "psychic, ice, dragon, dark, fairy, date, uid, team, flying)" +
+    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
     pool.getConnection(function(err, connection)
     {
         if (err) 
@@ -122,21 +142,18 @@ app.post('/addNewTeam', (req, res) => {
             console.log("could not connect" + err)
             res.end()
         }
-        connection.query(q, [uid, team, p1, p2, p3, p1Image, p2Image, p3Image, normal, fighting,
-        flying, poison, ground, rock, bug, steel, fire, water, grass, electric, psychic,
-        ice, dragon, dark, fairy, date], (err, results, field) =>
+        console.log(q)
+        connection.query(q, [p1, p2, p3, p1Image, p2Image, p3Image,
+        normal, fighting, poison, ground, rock, bug, ghost, steel, fire, water, grass, electric,
+        psychic, ice, dragon, dark, fairy, date, uid, team, flying], (err, results, field) =>
         {
             connection.release()
-            //console.log(result)
             if (err)
             {
-                console.log("could not search " + err)
+                console.log("could not post " + err)
                 res.sendStatus(500)
                 return
             }
-            console.log("added user to database")
-            // res.send(results.id)
-            console.log(results.insertId)
             res.send({id: results.insertId})       
         })
     })

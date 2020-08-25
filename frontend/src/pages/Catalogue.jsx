@@ -4,18 +4,22 @@ import styled from 'styled-components'
 import SideBar from '../components/sidebar'
 import Pokemon from '../components/pokemon'
 import axios from 'axios'
+import {Redirect} from 'react-router-dom';
+
 
 const PokemonScroller = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 8em;
   z-index: 1;
+  @media(min-width:950px){
+    margin-top: 8em;
+  }
+  @media(min-width:300px) and (max-width:949px){
+    margin-top: 11em;
+  }
 `
-  // @media(min-width:995px) and (max-width:1330px){
-  //   width: 995px;
-  // }
   
 const OuterContainer = styled.div`
   display: flex;
@@ -24,26 +28,37 @@ const OuterContainer = styled.div`
   align-items: stretch;
   z-index: 1;`
 
-  const PaginationBar = styled.div`
+const PaginationBar = styled.div`
   display: flex;
   justify-content: center;
   align-content: center;
   align-items: center;
   background-color: #91a3b0;
-  height: 4em;
   position: fixed;
   width: 100%;
   z-index: 2;
-  padding: 1% 3% 1% 3%;`
+  padding: 1% 3% 1% 3%;
+  @media(min-width:950px){
+    height: 4em;
+  }
+  @media(min-width:300px) and (max-width:949px){
+    height: 9.5em;
+  }`
 
 const BarElementsContainer = styled.div`
   display: flex;
-  flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
+  align-content: center;
   height: 80%;
   width: 90%;
   padding: 20px;
+  @media(min-width:950px){
+    flex-direction: row;
+  }
+  @media(min-width:300px) and (max-width:949px){
+    flex-direction: column;
+  }
   `
 
 const EmptyBox = styled.div`
@@ -63,11 +78,30 @@ const SelectBar = styled.select`
 const Button = styled.button`
     
 `
+const Button1 = styled.button`
+  @media(min-width:800px) and (max-width:949px){
+    margin-right: 600px;
+  }
+  @media(min-width:513px) and (max-width:799px){
+    margin-right: 300px;
+  }
+  @media(min-width:300px) and (max-width:512px){
+    margin-right: 110px;
+  }
+`
 
 const NavigationO = styled.div`
-  width: 200px;
-  height: 100%;
   padding: 10px;
+  height: 100%;
+  @media(min-width:950px){
+    width: 200px;
+  }
+  @media(min-width:800px) and (max-width:949px){
+    width: 800px;
+  }
+  @media(min-width:513px) and (max-width:799px){
+    margin-right: 50px;
+  }
 `
 const UserInput = styled.input`
     align-items: center;
@@ -85,8 +119,6 @@ const Catalogue = () => {
 
     const [filterType, setFilterType] = useState("none")
 
-    const [special, setSpecial] = useState("none")
-
     const [search, setSearch] = useState("")
 
     const [numberPP, setNumberPP] =  useState(20)
@@ -95,18 +127,16 @@ const Catalogue = () => {
 
     const [numberE, setNumberE] = useState(20)
 
-    const [currentPageUrl, setCurrentPageUrl] = useState("https://pokeapi.co/api/v2/pokemon/?limit=1048&offset=0")
+    const [currentPageUrl, setCurrentPageUrl] = useState("https://pokeapi.co/api/v2/pokemon/?limit=910&offset=0")
+
     const [loading, setLoading] = useState(true)
     
     async function getResponse(){
       let source = axios.CancelToken.source();
       const resp = await axios.get(currentPageUrl)
-      // console.log(resp.data, "data")
       const url = resp.data.results.map(p => axios.get(p.url))
 
       setPokemonList(resp.data.results.map(p=> p.name))
-
-      // console.log(url, "urls")
 
       var holderData = []
 
@@ -114,7 +144,6 @@ const Catalogue = () => {
         cancelToken: source.token,
       }).then(axios.spread((...responses) => {
         responses.forEach(r => {
-          // console.log(r)
           var typeHolder = []
           var urlHolder = []
           var monData = {}
@@ -127,12 +156,9 @@ const Catalogue = () => {
         })
         setPokemonInfo(holderData)
         setLoading(false)
-        // console.log(holderData)
-        // use/access the results 
-      })).catch(errors => {
-        // react on errors.
+      })).catch(errors => 
+      {
       }) 
-      // setSerachablePokeList(pokemonInfo)
       return function () {
         source.cancel("Cancelling in cleanup");}
     }
@@ -153,7 +179,6 @@ const Catalogue = () => {
       {
         return element.name.includes(s) 
       })
-      // console.log(holderTableReturn)
       setSerachablePokeList(holderTableReturn)
     }
 
@@ -162,8 +187,6 @@ const Catalogue = () => {
       setNumberS(0)
       if (s === "")
       {
-        // console.log("none filter type")
-        // console.log(pokemonInfo)
         setSerachablePokeList(pokemonInfo)
       }
       else
@@ -178,13 +201,10 @@ const Catalogue = () => {
 
     const user = localStorage.getItem('user')
 
-    // console.log(pokemonInfo)
     if(user === null)
     {
       return(
-        <div>
-          Not Logged In
-        </div>
+        <Redirect to = "/"/>
       )
     }
     else
@@ -211,7 +231,6 @@ const Catalogue = () => {
                     />
                   </NavigationO>
                   <NavigationO>
-                    {/* {special} */}
                     Filter type:&nbsp;
                     <SelectBar value = {filterType} 
                     onChange = {(event)=>{setFilterType(event.target.value)
@@ -238,28 +257,20 @@ const Catalogue = () => {
                       <option value = "fairy"> fairy </option>
                     </SelectBar>
                   </NavigationO>
-                  {/* <SortO>
-                    Sort by:&nbsp;
-                    <SelectBar>
-                      <option> index </option>
-                      <option> name </option>
-                      <option> type </option>
-                    </SelectBar>
-                  </SortO> */}
                   <NavigationO>
                     Pokemon per Page:&nbsp;
                     <SelectBar value = {numberPP}
                       onChange = {(event)=>{
                         setNumberPP(Number(event.target.value))
                         setNumberE(numberS+Number(event.target.value))
-                        setSpecial("none")}}>
+                      }}>
                       <option> 20 </option>
                       <option> 40 </option>
                       <option> 100 </option>
                     </SelectBar>
                   </NavigationO>
                   <NavigationO>
-                    <Button
+                    <Button1
                       onClick = {() => {
                         if(numberS - numberPP >= 0) {
                         console.log(numberS - numberPP, "new offset")
@@ -268,7 +279,7 @@ const Catalogue = () => {
                       }}}
                     >
                       Back
-                    </Button>
+                    </Button1>
                     <Button
                       onClick = {() => {
                         if(numberS +  numberPP < 1048) {
@@ -298,8 +309,5 @@ const Catalogue = () => {
       )
     }
 }
-
-{/* add empty boxes until modulo 3 reached */}
-                {/* <EmptyBox></EmptyBox> */}
 
 export default Catalogue

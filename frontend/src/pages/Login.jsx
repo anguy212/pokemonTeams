@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {useLocation, Redirect, useHistory, Link} from 'react-router-dom';
+import React, {useState} from 'react';
+import {Redirect, useHistory, Link} from 'react-router-dom';
 import styled from 'styled-components'
 import axios from 'axios'
 
@@ -12,8 +12,7 @@ const OuterContainer = styled.div`
     align-items:center;
     paddiing: 10px 50px 10px, 50px;`
 
-    //need to media qeury the width of buttons
-    const Button = styled.button`
+const Button = styled.button`
     background-color: #464647;
     color: white;
     font-size: 20px;
@@ -29,8 +28,6 @@ const OuterContainer = styled.div`
         margin-top: 25px;
     }
     `
-
-    //need to media qeury the width of inputs
     const UserInput = styled.input`
     align-items: center;
     align-content: center;
@@ -45,7 +42,6 @@ const OuterContainer = styled.div`
         height: 35px;
     }`
 
-    //need to change font style
     const NewUserLink = styled(Link)`
     text-align: center;
     justify-content: center;
@@ -122,7 +118,8 @@ const Login = () => {
             }
             else{
                 localStorage.setItem('user', username)
-                localStorage.setItem('id', res.data.id)
+                console.log(res.data[0].id)
+                localStorage.setItem('id', res.data[0].id)
                 history.push("/profile")
             }
         })

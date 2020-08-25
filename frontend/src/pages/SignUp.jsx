@@ -12,8 +12,7 @@ const OuterContainer = styled.div`
     align-items:center;
     paddiing: 10px 50px 10px, 50px;`
 
-    //need to media qeury the width of buttons
-    const Button = styled.button`
+const Button = styled.button`
     background-color: #464647;
     color: white;
     font-size: 20px;
@@ -30,8 +29,7 @@ const OuterContainer = styled.div`
     }
     `
 
-    //need to media qeury the width of inputs
-    const UserInput = styled.input`
+const UserInput = styled.input`
     align-items: center;
     align-content: center;
     padding: 0 .5em 0 .5em;
@@ -45,8 +43,7 @@ const OuterContainer = styled.div`
         height: 35px;
     }`
 
-    //need to change font style
-    const NewUserLink = styled(Link)`
+const NewUserLink = styled(Link)`
     text-align: center;
     justify-content: center;
     align-items: center;
@@ -121,7 +118,7 @@ const SignUp = () => {
             {
                 console.log(response.data)
                 localStorage.setItem('user', username)
-                localStorage.setItem('id', response.data.id)
+                localStorage.setItem('id', response.data[0].id)
                 history.push("/profile")
             })
         .catch((err)=>console.log(err))

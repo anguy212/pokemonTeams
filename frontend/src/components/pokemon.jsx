@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import styled from 'styled-components'
-import axios from 'axios'
 import {Radar} from 'react-chartjs-2'
 import types from '../constants/typesIndex'
 import Flippy, { FrontSide, BackSide } from 'react-flippy';
-import {useHistory, Link} from 'react-router-dom';
+
 
 const PokemonBox = styled.div`
     display: flex;
@@ -47,53 +46,27 @@ const T2 = styled.text`
 
 const Pokemon = (props) =>
 {   
-    let history = useHistory()
+    const strengths = types.strengths
 
     const labels = types.names 
-    const [data, setData] = useState(types.startData)
-    const chartDataExample = {labels: ["test1", "test2", "test3", "test4", "test5", "test6"],
-                datasets: [
-                    {data: [3,3,3,3,3,3]},
-                ]
-            }
-    // console.log(props, "prop")
+    const [data, setData] = useState([])
+    const [loading, setLoading] = useState(true)
     useEffect(()=>
     {
-        // console.log(props)
-        const CancelToken = axios.CancelToken;
-        const source = CancelToken.source();
-        props.pokemon.url.forEach(url => {
-            // console.log(url)
-            let cancel
-            axios.get(url, 
-                {cancelToken: new axios.CancelToken(c => cancel = c)}
-            ).then(res=>{
-                // console.log(res)
-                var newData = [...data]
-                res.data.damage_relations.double_damage_to.forEach(type =>{
-                    // console.log(type.name)
-                    // console.log(types.index[type.name])
-                    newData[types.index[type.name]] = 4
-                })
-                res.data.damage_relations.half_damage_to.forEach(type =>{
-                    // console.log(type.name)
-                    // console.log(types.index[type.name])
-                    newData[types.index[type.name]] = 1
-                })
-                res.data.damage_relations.no_damage_to.forEach(type =>{
-                    // console.log(type.name)
-                    // console.log(types.index[type.name])
-                    newData[types.index[type.name]] = 0
-                })
-                // console.log(newData, 'pokemondata', props.name)
-                // setData([2,2,2,2,2,2,4,2,2,4,2,2,2,2,2,2,2])
-                setData(newData)
-                // console.log(data)
-            })
-            return () => {
-                source.cancel();
-            };
-        });
+        setLoading(true)
+        var s = []
+        s = strengths[props.pokemon.type[0]]
+        if(props.pokemon.type.length === 2){
+          for (var i=0; i<s.length; i++)
+          {
+            if(s[i] < strengths[props.pokemon.type[1]][i])
+            {
+              s[i] = strengths[props.pokemon.type[1]][i]
+            }
+          }
+        }
+        setData(s)
+        setLoading(false)
     }, [])
     return(
         <>
@@ -101,13 +74,9 @@ const Pokemon = (props) =>
         props.pokemon?.image ? 
             <Card>
                 <Flippy
-                    flipOnHover={true} // default false
-                    flipOnClick={true} // default false
-                    flipDirection="horizontal" // horizontal or vertical
-                    // ref={(r) => this.flippy = r} // to use toggle method like this.flippy.toggle()
-                    // if you pass isFlipped prop component will be controlled component.
-                    // and other props, which will go to div
-                    // style={{ width: '200px', height: '200px' }} /// these are optional style, it is not necessary
+                    flipOnHover={true} 
+                    flipOnClick={true} 
+                    flipDirection="horizontal" 
                 >
                     <FrontSide
                     style={{
@@ -132,9 +101,10 @@ const Pokemon = (props) =>
                     </FrontSide>
                     <BackSide
                     style={{ backgroundColor: '#ffcb05'}}>
-                        {/* {console.log(data, 'here')}
-                        {console.log(labels, 'labels')} */}
                         <T2>Strengths</T2>
+                        {loading?
+                        <></>
+                        :
                         <Radar 
                                     data = {{labels: labels, datasets: [{data: data}]}}
                                     width = {250}
@@ -152,11 +122,9 @@ const Pokemon = (props) =>
                                         legend:{
                                             display: false
                                         },
-                                        // gridLines:{
-                                        //     display: false
-                                        // },
                                     }}
                                 />
+                        }
                     </BackSide>
                 </Flippy>
             </Card> 
