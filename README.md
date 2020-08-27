@@ -4,10 +4,10 @@
 A responsive web app which users can create pokemon teams according to their strengths. The main use of this is to build teams that will target specific weaknesses of opposing teams.
 
 **Table of Contents:** 
-- Pages and Components Overview
-- Technologies/Tools used in project
-- How to run
-- Improvements for future
+- [Pages and Components Overview](#Pages-and-Components)
+- [Technologies/Tools used in project](#Technologies-and-Tools)
+- [How to run](#How-to-Run)
+- [Improvements for Future](#Improvements-for-the-Future)
 
 **Mockup Presentation:** 
 https://docs.google.com/presentation/d/13u7kDctgJgnW38JNj-4PahGmpf8U9fS1aeLRMG5-pRA/edit?usp=sharing
