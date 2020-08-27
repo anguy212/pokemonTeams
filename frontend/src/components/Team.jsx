@@ -178,7 +178,8 @@ const Team = (props) =>
                                 ticks: {
                                 display: false,
                                 maxTicksLimit: 5,
-                                fontColor: 'white'
+                                fontColor: 'white',
+                                max: 12
                                 }
                             },
                                 title:{

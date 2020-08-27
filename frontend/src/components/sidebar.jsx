@@ -4,6 +4,7 @@ import { slide as Menu } from "react-burger-menu";
 const SideBar = (props) => {
   const test = () => {
     localStorage.removeItem('user')
+    localStorage.removeItem('id')
   }
   return (
     <Menu {...props}>

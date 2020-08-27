@@ -118,7 +118,7 @@ const SignUp = () => {
             {
                 console.log(response.data)
                 localStorage.setItem('user', username)
-                localStorage.setItem('id', response.data[0].id)
+                localStorage.setItem('id', response.data.id)
                 history.push("/profile")
             })
         .catch((err)=>console.log(err))

@@ -25,7 +25,7 @@ const Hat = styled.img`
     @media(max-width:449px){
       height: 50px;
       width: 50px;
-      margin-bottom: -70px;
+      margin-bottom: -65px;
     }
     `
 const Username = styled.h1`
@@ -180,8 +180,8 @@ const Header4 = styled.h3`
     font-family: Ketchum;
     transform: rotate(5deg);
     font-size: 2em;
-    margin-top: 20px;
-    margin-bottom: -20px;
+    margin-top: -2px;
+    margin-bottom: -25px;
     @media(max-width:450px){
       margin-top: 2px;
       font-size: 1.5em;
@@ -523,8 +523,8 @@ function Profile() {
                   <>
                     <Radar 
                       data = {{labels: types.names, datasets: [{data: totalStrength}]}}
-                      width = {220}
-                      height = {220}
+                      width = {200}
+                      height = {200}
                       options = {
                           {scale: {
                             ticks: {

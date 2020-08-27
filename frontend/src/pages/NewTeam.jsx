@@ -349,11 +349,11 @@ const NewTeam = () => {
 
     const [find, setfind] = useState("")
 
-    const [numberPP, setNumberPP] =  useState(20)
+    const [numberPP, setNumberPP] =  useState(12)
 
     const [numberS, setNumberS] = useState(0)
 
-    const [numberE, setNumberE] = useState(20)
+    const [numberE, setNumberE] = useState(12)
 
     const [currentPageUrl, setCurrentPageUrl] = useState("https://pokeapi.co/api/v2/pokemon/?limit=910&offset=0")
 
@@ -408,7 +408,6 @@ const NewTeam = () => {
     function findPokemons(s) {
       setNumberE(20)
       setNumberS(0)
-      console.log(s)
       var holderTableReturn = pokemonInfo.filter((element) =>
       {
         return element.name.includes(s) 
@@ -437,10 +436,8 @@ const NewTeam = () => {
       if(donePicking === false)
       {
         setPokemonPicked(pokemonPicked => [...pokemonPicked, p])
-        console.log(p)
         if (pokemonPicked.length === 2) 
         {
-          console.log("had 3")
           setDonePicking(true)
         }
       }
@@ -466,11 +463,9 @@ const NewTeam = () => {
     };
 
     function addTeamToDatabase(){
-      var count = 0
       var StrengthAll = []
       pokemonPicked.forEach((p) => {
         var s = []
-        console.log(strengths)
         s = strengths[p.type[0]]
         if(p.type.length === 2){
           for (var i=0; i<strengths[p.type[1]].length; i++)
@@ -483,17 +478,14 @@ const NewTeam = () => {
         }
         StrengthAll.push(s)
       })
-      console.log(StrengthAll, "strength all")
       var total = []
       for(var i = 0; i<StrengthAll[0].length; i++)
       {
         total.push(StrengthAll[0][i] + StrengthAll[1][i] + StrengthAll[2][i])
       }
-      console.log(total, "total strengths")
       var img1 = pokemonPicked[0].image.split("/")
       var img2 = pokemonPicked[1].image.split("/")
       var img3 = pokemonPicked[2].image.split("/")
-      console.log(img1[8], img2[8], img3[8])
       axios.post('http://localhost:8000/addNewTeam', {
         team: teamName,
         user: user,
@@ -525,7 +517,6 @@ const NewTeam = () => {
       })
       .then((response)=>
       {
-          console.log(response.data)
           history.push("/profile")
       })
       .catch((err)=>console.log(err))
@@ -624,16 +615,15 @@ const NewTeam = () => {
                         setNumberPP(Number(event.target.value))
                         setNumberE(numberS+Number(event.target.value))
                         }}>
-                      <option> 20 </option>
-                      <option> 40 </option>
-                      <option> 100 </option>
+                      <option> 12 </option>
+                      <option> 24 </option>
+                      <option> 72 </option>
                     </SelectBar>
                   </NavigationO>
                   <NavigationO>
                     <Button
                       onClick = {() => {
                         if(numberS - numberPP >= 0) {
-                        console.log(numberS - numberPP, "new offset")
                         setNumberS(numberS - numberPP)
                         setNumberE(numberE - numberPP)
                       }}}
@@ -643,7 +633,6 @@ const NewTeam = () => {
                     <Button
                       onClick = {() => {
                         if(numberS +  numberPP < 1048) {
-                        console.log(numberS +  numberPP, "new offset")
                         setNumberS(numberS + numberPP)
                         setNumberE(numberE + numberPP)
                       }}}>

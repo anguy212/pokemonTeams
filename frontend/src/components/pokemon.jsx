@@ -43,6 +43,12 @@ const T2 = styled.text`
     font-size: 25px;
     margin-bottom: -4em;
 `
+const TypeIcon = styled.img`
+    height: 18px;
+    width: 18px;
+    margin-right: 5%;
+    margin-bottom: -2%;
+`
 
 const Pokemon = (props) =>
 {   
@@ -56,19 +62,19 @@ const Pokemon = (props) =>
     {
         setLoading(true)
         var s = []
-        s = [...strengths[props.pokemon.type[0]]]
+        s = [...types.strengths[props.pokemon.type[0]]]
         if(props.pokemon.type.length === 2){
           for (var i=0; i<s.length; i++)
           {
-            if(s[i] < strengths[props.pokemon.type[1]][i])
+            if(s[i] < types.strengths[props.pokemon.type[1]][i])
             {
-              s[i] = strengths[props.pokemon.type[1]][i]
+              s[i] = types.strengths[props.pokemon.type[1]][i]
             }
           }
         }
         setData(s)
         setLoading(false)
-    }, [])
+    }, [props])
 
     return(
         <>
@@ -94,9 +100,7 @@ const Pokemon = (props) =>
                                 type:&nbsp;
                                 {props.pokemon.type.map((t) => 
                                     (
-                                        <text>
-                                            {t}&nbsp;
-                                        </text>
+                                        <TypeIcon src = {types.icons[t]}></TypeIcon>
                                     ))}
                             </text>
                             </PokemonBox>
@@ -113,8 +117,10 @@ const Pokemon = (props) =>
                                     height = {250}
                                     options = {{scale: {
                                         ticks: {
+                                        maxTicksLimit: 4,
+                                        beginAtZero: true,
+                                        max: 4,
                                         display: false,
-                                        maxTicksLimit: 5
                                         }
                                     },
                                         title:{
@@ -124,6 +130,9 @@ const Pokemon = (props) =>
                                         legend:{
                                             display: false
                                         },
+                                        gridLines: {
+                                            display: false
+                                         }
                                     }}
                                 />
                         }

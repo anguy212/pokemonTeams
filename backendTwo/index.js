@@ -21,10 +21,10 @@ var pool  = mysql.createPool({
     database        : 'testDB'
   });
 
-app.get('/teamRetrieve/:id', (req, res)=>
+app.get('/teamRetrieve/:uid', (req, res)=>
 {
-    const uid = req.body.id
-    const q = "SELECT * from TEAMS WHERE UID = " + 1 + ";"
+    const uid = req.params.uid
+    const q = "SELECT * from TEAMS WHERE UID = " + uid + ";"
     pool.getConnection(function(err, connection)
     {
         if (err) 
@@ -42,7 +42,6 @@ app.get('/teamRetrieve/:id', (req, res)=>
                 res.end()
                 return
             }
-            console.log(result)
             res.json(result)
         })
     })
@@ -142,7 +141,6 @@ app.post('/addNewTeam', (req, res) => {
             console.log("could not connect" + err)
             res.end()
         }
-        console.log(q)
         connection.query(q, [p1, p2, p3, p1Image, p2Image, p3Image,
         normal, fighting, poison, ground, rock, bug, ghost, steel, fire, water, grass, electric,
         psychic, ice, dragon, dark, fairy, date, uid, team, flying], (err, results, field) =>
