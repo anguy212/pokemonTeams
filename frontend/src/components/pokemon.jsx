@@ -4,7 +4,6 @@ import {Radar} from 'react-chartjs-2'
 import types from '../constants/typesIndex'
 import Flippy, { FrontSide, BackSide } from 'react-flippy';
 
-
 const PokemonBox = styled.div`
     display: flex;
     justify-content: center;

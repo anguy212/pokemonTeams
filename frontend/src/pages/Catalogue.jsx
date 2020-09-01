@@ -6,7 +6,6 @@ import Pokemon from '../components/pokemon'
 import axios from 'axios'
 import {Redirect} from 'react-router-dom';
 
-
 const PokemonScroller = styled.div`
   display: flex;
   flex-direction: row;
@@ -110,9 +109,8 @@ const UserInput = styled.input`
     padding: 0 .5em 0 .5em;
     margin: .4em 0;`
 
-const Catalogue = () => {
-    const [pokemonList, setPokemonList] = useState([])
 
+const Catalogue = () => {
     const [searchablePokeList, setSerachablePokeList] = useState([])
 
     const [pokemonInfo, setPokemonInfo] = useState([])
@@ -136,8 +134,6 @@ const Catalogue = () => {
       const resp = await axios.get(currentPageUrl)
       const url = resp.data.results.map(p => axios.get(p.url))
 
-      setPokemonList(resp.data.results.map(p=> p.name))
-
       var holderData = []
 
       axios.all(url, {
@@ -155,6 +151,12 @@ const Catalogue = () => {
           holderData.push(monData)
         })
         setPokemonInfo(holderData)
+        const now = new Date()
+        const pData = {
+          data: holderData,
+          expire: now.getTime() + 604800000
+        }
+        localStorage.setItem('pokemonList', JSON.stringify(pData))
         setLoading(false)
       })).catch(errors => 
       {
@@ -165,7 +167,21 @@ const Catalogue = () => {
 
     useEffect(() => {
       setLoading(true)
-      getResponse()
+      const pList = localStorage.getItem('pokemonList')
+      const pokemonList = JSON.parse(pList)
+      const now = new Date()
+      console.log(pokemonList)
+      if(pokemonList === null || now.getTime() > pokemonList.expire)
+      {
+        console.log("fetching from pokemon api")
+        getResponse()
+      }
+      else
+      {
+        console.log("getting pokemon info from cache")
+        setPokemonInfo(pokemonList.data)  
+        setLoading(false)      
+      }
     }, [])
 
     useEffect(() => {
